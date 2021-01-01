@@ -7,10 +7,11 @@ module.exports = function (rabbit, subscribeTo) {
       server: ['127.0.0.1'],
       port: 5672,
       vhost: '%2f',
-      publishTimeout: 100,
-      timeout: 1000,
-      failAfter: 30,
-      retryLimit: 400
+      publishTimeout: 360000,
+      retryTimeout: 360000,
+      timeout: 360000,
+      failAfter: 1,
+      retryLimit: 0
     },
 
     // define the exchanges
@@ -18,12 +19,18 @@ module.exports = function (rabbit, subscribeTo) {
       {
         name: 'wascally-pubsub-requests-x',
         type: 'direct',
-        autoDelete: true
+        autoDelete: true,
+        durable: false,
+        noBatch: true,
+        noAck: true,
       },
       {
         name: 'wascally-pubsub-messages-x',
         type: 'fanout',
-        autoDelete: true
+        autoDelete: true,
+        durable: false,
+        noBatch: true,
+        noAck: true,
       }
     ],
 
@@ -32,14 +39,18 @@ module.exports = function (rabbit, subscribeTo) {
     queues: [
       {
         name: 'wascally-pubsub-requests-q',
-        // autoDelete: true,
-        durable: true,
-        unique: 'hash',
+        autoDelete: true,
+        durable: false,
+        noBatch: true,
+        noAck: true,
         subscribe: subscribeTo === 'requests'
       },
       {
         name: 'wascally-pubsub-messages-q',
         autoDelete: true,
+        durable: false,
+        noBatch: true,
+        noAck: true,
         subscribe: subscribeTo === 'messages'
       }
     ],

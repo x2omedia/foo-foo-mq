@@ -1,11 +1,8 @@
 const Monologue = require('node-monologue');
 const connectionFn = require('./connectionFsm.js');
 const topologyFn = require('./topology.js');
-const postal = require('postal');
+const handlers = require('./handlers');
 const uuid = require('uuid');
-const dispatch = postal.channel('rabbit.dispatch');
-const responses = postal.channel('rabbit.responses');
-const signal = postal.channel('rabbit.ack');
 const log = require('./log');
 
 const DEFAULT = 'default';
@@ -92,7 +89,7 @@ Broker.prototype.addConnection = function (opts) {
       connection.on('connected', () => {
         self.emit('connected', connection);
         self.emit(connection.name + '.connection.opened', connection);
-        self.setAckInterval(500);
+        //self.setAckInterval(500);
         resolve(topology);
       });
 
@@ -157,7 +154,7 @@ Broker.prototype.addSerializer = function (contentType, serializer) {
 };
 
 Broker.prototype.batchAck = function () {
-  signal.publish('ack', {});
+  handlers.publish('ack', {});
 };
 
 Broker.prototype.bindExchange = function (source, target, keys, connectionName = DEFAULT) {
@@ -273,43 +270,9 @@ Broker.prototype.getQueue = function (name, connectionName = DEFAULT) {
   return this.connections[connectionName].channels[`queue:${name}`];
 };
 
-Broker.prototype.handle = function (messageType, handler, queueName, context) {
+Broker.prototype.handle = function (messageType, handler) {
   this.hasHandles = true;
-  var options;
-  if (typeof messageType === 'string') {
-    options = {
-      type: messageType,
-      queue: queueName || '*',
-      context: context,
-      autoNack: this.autoNack,
-      handler: handler
-    };
-  } else {
-    options = messageType;
-    options.autoNack = options.autoNack !== false;
-    options.queue = options.queue || (options.type ? '*' : '#');
-    options.handler = options.handler || handler;
-  }
-  const parts = [];
-  if (options.queue === '#') {
-    parts.push('#');
-  } else {
-    parts.push(options.queue.replace(/[.]/g, '-'));
-    if (options.type !== '') {
-      parts.push(options.type || '#');
-    }
-  }
-
-  const target = parts.join('.');
-  const subscription = dispatch.subscribe(target, options.handler.bind(options.context));
-  if (options.autoNack) {
-    subscription.catch(function (err, msg) {
-      console.log("Handler for '" + target + "' failed with:", err.stack);
-      msg.nack();
-    });
-  }
-  subscription.remove = subscription.unsubscribe;
-  return subscription;
+  handlers.subscribe(messageType, handler);
 };
 
 Broker.prototype.ignoreHandlerErrors = function () {
@@ -457,13 +420,14 @@ Broker.prototype.request = function (exchangeName, options = {}, notify, connect
       const replyTimeout = options.replyTimeout || exchange.replyTimeout || connection.replyTimeout || (publishTimeout * 2);
 
       return new Promise((resolve, reject) => {
+        const topic = 'req-' + requestId;
         const timeout = setTimeout(function () {
-          subscription.unsubscribe();
+          handlers.unsubscribe(topic, handler);
           reject(new Error('No reply received within the configured timeout of ' + replyTimeout + ' ms'));
         }, replyTimeout);
         const scatter = options.expect;
         let remaining = options.expect;
-        const subscription = responses.subscribe(requestId, message => {
+        const subscription = handlers.subscribe(topic, message => {
           const end = scatter
             ? --remaining <= 0
             : message.properties.headers.sequence_end;

@@ -1,6 +1,5 @@
-const postal = require('postal');
 const Monologue = require('node-monologue');
-const signal = postal.channel('rabbit.ack');
+const handlers = require('./handlers');
 const log = require('./log.js')('rabbot.acknack');
 
 /* log
@@ -251,7 +250,7 @@ AckBatch.prototype.ignoreSignal = function () {
 
 AckBatch.prototype.listenForSignal = function () {
   if (!this.signalSubscription) {
-    this.signalSubscription = signal.subscribe('#', () => {
+    this.signalSubscription = handlers.subscribe('#', () => {
       this._processBatch();
     });
   }

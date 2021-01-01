@@ -1,7 +1,5 @@
 const AckBatch = require('../ackBatch.js');
-const postal = require('postal');
-const dispatch = postal.channel('rabbit.dispatch');
-const responses = postal.channel('rabbit.responses');
+const handlers = require('../handlers');
 const info = require('../info');
 const log = require('../log')('rabbot.queue');
 const format = require('util').format;
@@ -422,24 +420,9 @@ function subscribe (channelName, channel, topology, serializers, messages, optio
     };
 
     if (raw.fields.routingKey === topology.replyQueue.name) {
-      responses.publish(
-        {
-          topic: correlationId,
-          headers: {
-            resolverNoCache: true
-          },
-          data: raw
-        },
-        onPublish
-      );
+      handlers.publish('req-' + correlationId, raw, onPublish);
     } else {
-      dispatch.publish({
-        topic: topic,
-        headers: {
-          resolverNoCache: !shouldCacheKeys
-        },
-        data: raw
-      }, onPublish);
+      handlers.publish(raw.type, raw, onPublish);
     }
   }, options)
     .then(function (result) {
