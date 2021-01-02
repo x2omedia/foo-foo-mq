@@ -1,5 +1,5 @@
 const Monologue = require('node-monologue');
-const handlers = require('./handlers');
+//const handlers = require('./handlers');
 const log = require('./log.js')('rabbot.acknack');
 
 /* log
@@ -249,11 +249,11 @@ AckBatch.prototype.ignoreSignal = function () {
 };
 
 AckBatch.prototype.listenForSignal = function () {
-  if (!this.signalSubscription) {
-    this.signalSubscription = handlers.subscribe('#', () => {
-      this._processBatch();
-    });
-  }
+  // if (!this.signalSubscription) {
+  //   this.signalSubscription = handlers.subscribe('#', () => {
+  //     this._processBatch();
+  //   });
+  // }
 };
 
 AckBatch.prototype.reset = function () {

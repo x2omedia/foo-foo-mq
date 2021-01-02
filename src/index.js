@@ -154,7 +154,7 @@ Broker.prototype.addSerializer = function (contentType, serializer) {
 };
 
 Broker.prototype.batchAck = function () {
-  handlers.publish('ack', {});
+  //handlers.publish('ack', {});
 };
 
 Broker.prototype.bindExchange = function (source, target, keys, connectionName = DEFAULT) {
@@ -272,7 +272,7 @@ Broker.prototype.getQueue = function (name, connectionName = DEFAULT) {
 
 Broker.prototype.handle = function (messageType, handler) {
   this.hasHandles = true;
-  handlers.subscribe(messageType, handler);
+  return handlers.subscribe(messageType, handler);
 };
 
 Broker.prototype.ignoreHandlerErrors = function () {
@@ -427,7 +427,7 @@ Broker.prototype.request = function (exchangeName, options = {}, notify, connect
         }, replyTimeout);
         const scatter = options.expect;
         let remaining = options.expect;
-        const subscription = handlers.subscribe(topic, message => {
+        let handler = message => {
           const end = scatter
             ? --remaining <= 0
             : message.properties.headers.sequence_end;
@@ -436,11 +436,12 @@ Broker.prototype.request = function (exchangeName, options = {}, notify, connect
             if (!scatter || remaining === 0) {
               resolve(message);
             }
-            subscription.unsubscribe();
+            //subscription.unsubscribe();
           } else if (notify) {
             notify(message);
           }
-        });
+        };
+        const subscription = handlers.subscribe(topic, handler);
         this.publish(exchangeName, options);
       });
     });
@@ -458,10 +459,10 @@ Broker.prototype.retry = function (connectionName = DEFAULT) {
 };
 
 Broker.prototype.setAckInterval = function (interval) {
-  if (this.ackIntervalId) {
-    this.clearAckInterval();
-  }
-  this.ackIntervalId = setInterval(this.batchAck, interval);
+  // if (this.ackIntervalId) {
+  //   this.clearAckInterval();
+  // }
+  // this.ackIntervalId = setInterval(this.batchAck, interval);
 };
 
 Broker.prototype.shutdown = function () {

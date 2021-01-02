@@ -12,8 +12,18 @@ Handlers.prototype.subscribe = function (topic, handler) {
     };
 };
 
-Handlers.prototype.unsubscribe = function (topic) {
-    delete this.handles[topic];
+Handlers.prototype.unsubscribe = function (topic, handler) {
+    if(handler) {
+        var index = this.handles[topic].indexOf(handler);
+        if (index !== -1) {
+            this.handles[topic].splice(index, 1);
+        }
+        if(this.handles[topic].length === 0) {
+            delete this.handles[topic];
+        }
+    } else {
+        delete this.handles[topic];
+    }
 };
 
 Handlers.prototype.publish = function (topic, raw, onPublish) {
@@ -22,6 +32,9 @@ Handlers.prototype.publish = function (topic, raw, onPublish) {
             this.handles[topic][index](raw);
         }
         onPublish({activated:true});
+        if(topic.indexOf('req-') === 0) {
+            this.unsubscribe(topic);
+        }
     }
 };
 
