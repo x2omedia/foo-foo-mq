@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.0.0](https://github.com/Foo-Foo-MQ/foo-foo-mq/compare/v6.0.0...v7.0.0) (2021-07-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* **package.json, .nvmrc and travis:** Node 10 is no longer supported
+
+### Features
+
+* **package.json, .nvmrc and travis:** change supported node versions to 12-16 ([1634c0b](https://github.com/Foo-Foo-MQ/foo-foo-mq/commit/1634c0b9eda27222f16ca0a9cc7cfd441d3ef6fe)), closes [#28](https://github.com/Foo-Foo-MQ/foo-foo-mq/issues/28)
+
+
+### Bug Fixes
+
+* **package.json:** fix security vulnerabilities and update dependencies ([08d3c5e](https://github.com/Foo-Foo-MQ/foo-foo-mq/commit/08d3c5ef68b4ede630a838bea5ea346a06cb856c))
+
 ## [6.0.0](https://github.com/Foo-Foo-MQ/foo-foo-mq/compare/v5.1.0...v6.0.0) (2021-05-11)
 
 
