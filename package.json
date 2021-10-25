@@ -3,6 +3,7 @@
   "version": "7.0.0",
   "description": "Abstractions to simplify working with the RabbitMQ",
   "main": "src/index.js",
+  "types": "src/index.d.ts",
   "engines": {
     "node": ">=12 <=16"
   },
