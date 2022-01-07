@@ -18,12 +18,12 @@ declare namespace Broker {
   export function addExchange(
     exchangeName: string,
     exchangeType: ExchangeType,
-    options?: ExchangeOptions,
+    options?: Omit<ExchangeOptions, "name" | "type">,
     connectionName?: string
   ): Promise<void>;
   export function addQueue(
     queueName: string,
-    options?: QueueOptions,
+    options?: Omit<QueueOptions, "name">,
     connectionName?: string
   ): Promise<void>;
   export function bindExchange(
@@ -199,9 +199,14 @@ declare namespace Broker {
     pass?: string;
     timeout?: number;
     heartbeat?: number;
-    replyQueue?: boolean | string | {
-      name: string; autoDelete?: boolean; subscribe?: boolean;
-    };
+    replyQueue?:
+      | boolean
+      | string
+      | {
+          name: string;
+          autoDelete?: boolean;
+          subscribe?: boolean;
+        };
     publishTimeout?: number;
     replyTimeout?: number;
     failAfter?: number;
@@ -217,7 +222,7 @@ declare namespace Broker {
   }
 
   export interface QueueOptions {
-    name?: string;
+    name: string;
     limit?: number;
     queueLimit?: number;
     deadLetter?: string;
@@ -231,8 +236,8 @@ declare namespace Broker {
   }
 
   export interface ExchangeOptions {
-    name?: string;
-    type?: ExchangeType;
+    name: string;
+    type: ExchangeType;
     publishTimeout?: number;
     alternate?: string;
     persistent?: boolean;
