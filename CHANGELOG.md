@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.1.0](https://github.com/Foo-Foo-MQ/foo-foo-mq/compare/v7.0.0...v7.1.0) (2022-07-02)
+
+
+### Features
+
+* typescript support ([bca4584](https://github.com/Foo-Foo-MQ/foo-foo-mq/commit/bca45849238b211d636b75a36ef6bb5aec6e5227))
+
+
+### Bug Fixes
+
+* **types:** duplicate options in addExchange and addQueue ([05f628e](https://github.com/Foo-Foo-MQ/foo-foo-mq/commit/05f628e759dd3b664d923efce1fc0ede293b119e))
+
 ## [7.0.0](https://github.com/Foo-Foo-MQ/foo-foo-mq/compare/v6.0.0...v7.0.0) (2021-07-18)
 
 
