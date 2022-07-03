@@ -2,10 +2,10 @@ name: Converted Workflow
 'on':
   push:
     branches:
-      - convert-travis
+      - main
   pull_request:
     branches:
-      - convert-travis
+      - main
 jobs:
   Build:
     strategy:
