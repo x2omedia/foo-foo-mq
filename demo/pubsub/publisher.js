@@ -1,7 +1,8 @@
+const rabbit = require('../../src/index.js');
+const fs = require('fs');
+
 const TESTING_REQUEST = true;
 let start = 0;
-var rabbit = require('../../src/index.js');
-var fs = require('fs');
 var receivedBack = 0;
 
 rabbit.log(
@@ -41,13 +42,13 @@ rabbit.on('unreachable', function () {
 });
 
 function publish (batchSize, total) {
-  var subtotal = total;
+  let subtotal = total;
   if (total > batchSize) {
     subtotal = batchSize;
   }
-  var pending = new Array(subtotal);
+  const pending = new Array(subtotal);
   total -= subtotal;
-  var lost = 0;
+  let lost = 0;
   const publish_fct = (TESTING_REQUEST? rabbit.request:rabbit.publish).bind(rabbit);
   for (let i = 0; i < subtotal; i++) {
     pending.push(

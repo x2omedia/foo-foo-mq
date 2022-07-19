@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.1.0](https://github.com/Foo-Foo-MQ/foo-foo-mq/compare/v7.0.0...v7.1.0) (2022-07-02)
+
+
+### Features
+
+* typescript support ([bca4584](https://github.com/Foo-Foo-MQ/foo-foo-mq/commit/bca45849238b211d636b75a36ef6bb5aec6e5227))
+
+
+### Bug Fixes
+
+* **types:** duplicate options in addExchange and addQueue ([05f628e](https://github.com/Foo-Foo-MQ/foo-foo-mq/commit/05f628e759dd3b664d923efce1fc0ede293b119e))
+
+## [7.0.0](https://github.com/Foo-Foo-MQ/foo-foo-mq/compare/v6.0.0...v7.0.0) (2021-07-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* **package.json, .nvmrc and travis:** Node 10 is no longer supported
+
+### Features
+
+* **package.json, .nvmrc and travis:** change supported node versions to 12-16 ([1634c0b](https://github.com/Foo-Foo-MQ/foo-foo-mq/commit/1634c0b9eda27222f16ca0a9cc7cfd441d3ef6fe)), closes [#28](https://github.com/Foo-Foo-MQ/foo-foo-mq/issues/28)
+
+
+### Bug Fixes
+
+* **package.json:** fix security vulnerabilities and update dependencies ([08d3c5e](https://github.com/Foo-Foo-MQ/foo-foo-mq/commit/08d3c5ef68b4ede630a838bea5ea346a06cb856c))
+
+## [6.0.0](https://github.com/Foo-Foo-MQ/foo-foo-mq/compare/v5.1.0...v6.0.0) (2021-05-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* default port on amqps:// uri is now 5671
+
+### Bug Fixes
+
+* default port resolving on amqps:// protocol should be 5671 ([84440d4](https://github.com/Foo-Foo-MQ/foo-foo-mq/commit/84440d48eef0974577a8c6a995b90411ded7c1fc))
+
+## [5.1.0](https://github.com/Foo-Foo-MQ/foo-foo-mq/compare/v5.0.0...v5.1.0) (2021-03-14)
+
+
+### Features
+
+* **package.json and travis:** update amqplib and add support for node 15 ([0fe6a5c](https://github.com/Foo-Foo-MQ/foo-foo-mq/commit/0fe6a5cb413712b95fef6add7ce6af0c0f6b1c04))
+
+
+### Bug Fixes
+
+* **package.json:** update node-monologue to version that supports node 15 ([eb6210d](https://github.com/Foo-Foo-MQ/foo-foo-mq/commit/eb6210d090ae235518d61ae3250c4d27cfbe9a72))
+
 ## [5.0.0](https://github.com/Foo-Foo-MQ/foo-foo-mq/compare/v4.0.4...v5.0.0) (2020-08-17)
 
 
