@@ -96,20 +96,17 @@ function readFromFileIfPathOrDefaultToInput (possiblePathOrValue) {
 }
 
 const Adapter = function (parameters) {
-  var uriOpts = parseUri(parameters.uri);
+  const uriOpts = parseUri(parameters.uri);
   Object.assign(parameters, uriOpts);
   const hosts = getOption(parameters, 'host');
   const servers = getOption(parameters, 'server');
   const brokers = getOption(parameters, 'RABBIT_BROKER');
   const serverList = brokers || hosts || servers || 'localhost';
-  const portList = getOption(parameters, 'RABBIT_PORT') || getOption(parameters, 'port', 5672);
 
   this.name = parameters ? (parameters.name || 'default') : 'default';
   this.servers = split(serverList);
   this.connectionIndex = getInitialIndex(this.servers.length);
-  this.ports = split(portList);
   this.heartbeat = getOption(parameters, 'RABBIT_HEARTBEAT') || getOption(parameters, 'heartbeat', 30);
-  this.protocol = getOption(parameters, 'RABBIT_PROTOCOL') || getOption(parameters, 'protocol', 'amqp://');
   this.pass = getOption(parameters, 'RABBIT_PASSWORD') || getOption(parameters, 'pass', 'guest');
   this.user = getOption(parameters, 'RABBIT_USER') || getOption(parameters, 'user', 'guest');
   this.vhost = getOption(parameters, 'RABBIT_VHOST') || getOption(parameters, 'vhost', '%2f');
@@ -120,7 +117,11 @@ const Adapter = function (parameters) {
   const passphrase = getOption(parameters, 'RABBIT_PASSPHRASE') || getOption(parameters, 'passphrase');
   const pfxPath = getOption(parameters, 'RABBIT_PFX') || getOption(parameters, 'pfxPath');
   const useSSL = certPath || keyPath || passphrase || caPaths || pfxPath || parameters.useSSL;
+  const portList = getOption(parameters, 'RABBIT_PORT') || getOption(parameters, 'port', (useSSL ? 5671 : 5672));
+  this.protocol = getOption(parameters, 'RABBIT_PROTOCOL') || (useSSL ? 'amqps://' : 'amqp://');
+  this.ports = split(portList);
   this.options = { noDelay: true };
+
   if (timeout) {
     this.options.timeout = timeout;
   }
@@ -140,9 +141,6 @@ const Adapter = function (parameters) {
     const list = caPaths.split(',');
     this.options.ca = list.map(readFromFileIfPathOrDefaultToInput);
   }
-  if (useSSL) {
-    this.protocol = 'amqps://';
-  }
   this.options.clientProperties = Object.assign({
     host: info.host(),
     process: info.process(),
@@ -154,9 +152,8 @@ const Adapter = function (parameters) {
 Adapter.prototype.connect = function () {
   return new Promise(function (resolve, reject) {
     const attempted = [];
-    var attempt;
-    attempt = function () {
-      var nextUri = this.getNextUri();
+    const attempt = function () {
+      const nextUri = this.getNextUri();
       log.info("Attempting connection to '%s' (%s)", this.name, nextUri);
       function onConnection (connection) {
         connection.uri = nextUri;

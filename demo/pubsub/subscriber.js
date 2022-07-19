@@ -1,5 +1,5 @@
-var rabbit = require('../../src/index.js');
-var fs = require('fs');
+const rabbit = require('../../src/index.js');
+const fs = require('fs');
 
 rabbit.log(
   { level: 'debug', stream: fs.createWriteStream('./debug-' + Date.now() + '-subscriber.log'), objectMode: true }
@@ -22,7 +22,7 @@ rabbit.handle('publisher.message', function (msg) {
     report();
   }
   if ((++counts.received) >= counts.expected - 1) {
-    var diff = Date.now() - counts.started;
+    const diff = Date.now() - counts.started;
     console.log('Received', counts.received, 'messages after', diff, 'milliseconds');
   }
   
@@ -74,7 +74,7 @@ rabbit.handle('publisher.message', function (msg) {
 });
 
 function report () {
-  var diff = Date.now() - counts.started;
+  const diff = Date.now() - counts.started;
   console.log('Received', counts.received, 'messages after', diff, 'milliseconds');
 }
 
@@ -95,7 +95,7 @@ require('./topology.js')(rabbit, 'messages')
 // expire if not picked up from the queue in time.
 // this prevents a bunch of requests from stacking up in the request
 // queue and causing the publisher to send multiple bundles
-var requestCount = 0;
+let requestCount = 0;
 
 function notifyPublisher () {
   console.log('Sending request', ++requestCount);

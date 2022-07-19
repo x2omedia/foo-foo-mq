@@ -1,5 +1,6 @@
 require('../../setup');
 const fs = require('fs');
+const path = require('path');
 const ampqlib = require('amqplib');
 const rabbit = require('../../../src/index.js');
 const config = require('../../integration/configuration');
@@ -20,7 +21,8 @@ describe('AMQP Connection', function () {
           certPath: 'cert',
           keyPath: 'key',
           pfxPath: 'pfx',
-          passphrase: 'passphrase-is-not-a-path'
+          passphrase: 'passphrase-is-not-a-path',
+          port: null // To check the port is auto-resolved correctly to 5671
         }
       })
         .catch(() => {
@@ -33,7 +35,7 @@ describe('AMQP Connection', function () {
     });
 
     it('should have all of the provided ssl options', function () {
-      const uri = 'amqps://guest:guest@127.0.0.1:5672/%2f?heartbeat=30';
+      const uri = 'amqps://guest:guest@127.0.0.1:5671/%2f?heartbeat=30';
 
       const expectedConnectionOptions = {
         servername: '127.0.0.1',
@@ -61,7 +63,7 @@ describe('AMQP Connection', function () {
   describe('ssl support options when values are paths', function () {
     let amqplibConnectSpy;
     let sandbox;
-    const getLocalPath = (fileName) => `${__dirname}/${fileName}`;
+    const getLocalPath = (fileName) => path.join(__dirname, fileName);
     const sslPathSettings = [
       getLocalPath('caPath1'),
       getLocalPath('caPath2'),
@@ -72,7 +74,7 @@ describe('AMQP Connection', function () {
 
     before(function (done) {
       sandbox = sinon.createSandbox();
-      sslPathSettings.map((settingName) => {
+      sslPathSettings.forEach((settingName) => {
         fs.writeFileSync(settingName, `${settingName.split('/').pop()}-file-contents`);
       });
 
@@ -94,7 +96,7 @@ describe('AMQP Connection', function () {
     });
 
     after(() => {
-      sslPathSettings.map((settingName) => {
+      sslPathSettings.forEach((settingName) => {
         fs.unlinkSync(settingName);
       });
       sandbox.restore();
